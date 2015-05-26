@@ -36,7 +36,17 @@ Debugging工具栏会提供所有debugging所需的工具：
 “何时命中”菜单允许你来指定当断点命中时的动作。  
 ![breakpoint_asp.net3.jpg](images/breakpoint_asp.net3.jpg)  
 ## Debug窗口  
-Visual Studio提供下面的debug窗口，其中每一个都显示一些程序信息。下表列出了一些窗口：  
+Visual Studio提供下面的debug窗口，其中每一个都显示一些程序信息。下表列出了一些窗口： 
+|序号   | 方法和描述         |
+|:---------|:------------|  
+|1|**void assertEquals(boolean expected, boolean actual)**<br> 检查两个变量或者等式是否平衡 |  
+|2|**void assertTrue(boolean expected, boolean actual)**<br> 检查条件为真|
+|3|**void assertFalse(boolean condition)**<br> 检查条件为假|
+|4|**void assertNotNull(Object object)**<br> 检查对象不为空|
+|5|**void assertNull(Object object)**<br> 检查对象为空|
+|6|**void assertSame(boolean condition)**<br> assertSame() 方法检查两个相关对象是否指向同一个对象|
+|7|**void assertNotSame(boolean condition)**<br> assertNotSame() 方法检查两个相关对象是否不指向同一个对象|
+|8|**void assertArrayEquals(expectedArray, resultArray)**<br> assertArrayEquals() 方法检查两个数组是否相等| 
 <table class="table table-bordered table-striped table-condensed">
 
 <tr>
