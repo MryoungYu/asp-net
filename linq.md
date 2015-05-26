@@ -174,6 +174,8 @@ TotalSale = Price of the Book * Sales
 ```
 
 为了完成这个算式，加入下面这个代码片段在Page_Load方法的句柄里:  
+
+let子句允许定义一个变量并且将数据计算的一个值赋给它。举个例子，计从上述两个销售值中计算总销售值，你需要这样计算:
 ```
 var booktitles = from b in book join s in sales on b.ID equals s.ID
    let totalprofit = (b.Price * s.sales)
