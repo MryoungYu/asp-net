@@ -38,45 +38,11 @@ Debugging工具栏会提供所有debugging所需的工具：
 ## Debug窗口  
 Visual Studio提供下面的debug窗口，其中每一个都显示一些程序信息。下表列出了一些窗口： 
 
-|序号   | 方法和描述         |
+|窗口   | 描述         |
 |:---------|:------------|  
-|1|检查两个变量或者等式是否平衡 |  
-|2|检查条件为真|
-|3|检查条件为假|
-|4|检查对象不为空|
-|5|检查对象为空|
-|6|方法检查两个相关对象是否指向同一个对象|
-
-<table class="table table-bordered table-striped table-condensed">
-
-<tr>
-<th>Window</th>
-<th>Description</th>
-</tr>
-
-<tr>
-<td>Immediate</td>
-<td>Displays variables and expressions.</td>
-</tr>
-<tr>
-<td>Autos</td>
-<td>Displays all variables in the current and previous statements.</td>
-</tr>
-<tr>
-<td>Locals</td>
-<td>Displays all variables in the current context.</td>
-</tr>
-<tr>
-<td>Watch</td>
-<td>Displays up to four different sets of variables.</td>
-</tr>
-<tr>
-<td>Call Stack</td>
-<td>Displays all methods in the call stack.</td>
-</tr>
-<tr>
-<td>Threads</td>
-<td>Displays and control threads.</td>
-</tr>
-
-</table>
+|直接|显示变量和表达式 |  
+|自动|显示当前所有变量以及之前的状态|
+|本地|显示当前上下文的所有变量|
+|观察|显示多达四个不同集合的变量|
+|调用栈|显示调用栈中的所有方法|
+|线程|显示并控制线程|
