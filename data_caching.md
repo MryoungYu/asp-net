@@ -51,7 +51,139 @@ protected void Page_Load(object sender, EventArgs e)
 |无存储|是/否|描述无存储缓存头是否被发送|
 |缓存配置|字符串名|存储在web.config中的缓存配置文件名字|
 |改变参数|空<br />*<br />参数名|GET请求中使用分号分隔的字符串值或者是POST请求中的变量值|
-|改变头|*或者头文件名|可能是由客户端提交的用分号分隔的指定头的字符串|
-|改变客户|浏览器或者是客户字符串|通知ASP.NET通过浏览器名字版本或者客户端字符串改变输出缓存|
-|位置|任何或者是客户端或者是下载流或者是服务端或者是空||
-|生命周期|数字||
+|改变头|*<br />头文件名|可能是由客户端提交的用分号分隔的指定头的字符串|
+|改变客户|浏览器<br />客户字符串|通知ASP.NET通过浏览器名字版本或者客户端字符串改变输出缓存|
+|位置|任何<br />客户端<br />下载流<br />服务端<br />空|任何:页面可能缓存在任何位置<br />客户端:缓存内容包含在浏览器中<br />下载流:缓存内容保存在下载流和服务器中<br />服务器:缓存仅保存在服务器之中<br />空:不允许缓存|
+|生命周期|数字|被缓存页面或者操作的秒数|
+
+让我们为前面的示例添加一个文本框和一个按钮，并添加这个按钮的事件处理程序。  
+
+```
+protected void btnmagic_Click(object sender, EventArgs e)
+{
+    Response.Write("<br><br>");
+    Response.Write("<h2> Hello, " + this.txtname.Text + "</h2>");
+}
+```
+
+改变OutputCache指令：  
+
+```
+<%@ OutputCache Duration="60" VaryByParam="txtname" %>
+```
+
+程序执行的时候，ASP在文本框中依据名字缓存页面。  
+## 数据缓存
+数据缓存的主要方面是数据源控件缓存。我们已经讨论了数据源控件代表一个数据源中的数据,如数据库或XML文件。这些控件从抽象类DataSourceContro中派生，并有以下继承属性以实现缓存:  
+
+- 缓存期— 为缓存数据的数据源计时。
+- 缓存期满策略—定义了当数据在缓存中过期时，缓存的行为。
+- 缓存值依赖—定义了一个控件值，这个控件可以在数据期满时自动将其移出缓存。
+- 启用缓存—可以确认是否缓存了数据。
+
+### 实例
+为了演示数据缓存,我们创建一个新的网站,在上面添加一个新的网络表单。在数据库中添加一个连接数据访问教程的SqlDataSource控件。  
+在这个实例中，我们给页面添加一个标签，这个标签可以显示页面的回应时间。  
+
+```
+<asp:Label ID="lbltime" runat="server"></asp:Label>
+```
+
+除了这个标签，整个页面和数据访问教程是一样的。为这个页面添加一个事件处理器，来下载时间。  
+
+```
+protected void Page_Load(object sender, EventArgs e)
+{
+    lbltime.Text = String.Format("Page posted at: {0}", DateTime.Now.ToLongTimeString());
+}
+```
+
+设计的页面应该是如下这个样子的：  
+![data_caching.jpg](images/data_caching.jpg)  
+当你第一次执行页面时，并没有发生什么不同。标签显示,每次刷新页面,页面会重新加载,而且在标签上会显示时间的变化。  
+接下来,把数据源控件的EnableCaching的属性设置为“真”,将Cacheduration属性设置为“60”。它将实现缓存,缓存将每隔60秒到期。  
+每一次刷新，时间戳都会变化。但如果你在60秒之内改变表中的数据,在缓存到期之前将不会显示。  
+
+```
+<asp:SqlDataSource ID = "SqlDataSource1" runat = "server" 
+   ConnectionString = "<%$ ConnectionStrings: ASPDotNetStepByStepConnectionString %>" 
+    ProviderName = "<%$ ConnectionStrings: ASPDotNetStepByStepConnectionString.ProviderName %>" 
+    SelectCommand = "SELECT * FROM [DotNetReferences]"
+    EnableCaching = "true" CacheDuration = "60">         
+</asp:SqlDataSource>
+```
+
+## 对象缓存
+对象缓存比其他缓存技术提供了更大的灵活性。你可以利用对象缓存在缓存中放置任何对象。对象也可以是任意类型的—数据类型，网络控件，类，数据设置对象等等。仅仅需要给这些项目分配一个值名，它们就可以被添加到缓存中，就像下面展示的这样：  
+
+```
+Cache["key"] = item;
+```
+
+为了在缓存中插入对象，ASP提供了Insert()方法。这种方法有四种重载版本。我们来看一下：  
+
+
+| 重载   |描述      |
+|:------------|:------------|
+|Cache.Insert((key, value);|以键值对的方式插入缓存，优先权和生命周期为默认 |  
+|Cache.Insert(key, value, dependencies);|以键值对的方式插入缓存，优先权和生命周期为默认，和链接到其他文件或内容的缓存依赖，这样缓存修改就不再还有限的了|
+|Cache.Insert(key, value, dependencies, absoluteExpiration, slidingExpiration);|指出上述配置的有效期|
+|Cache.Insert(key, value, dependencies, absoluteExpiration, slidingExpiration, priority, onRemoveCallback);|与配置一起也允许设置缓存内容的优先权并委派，指出一种方法来调用当一个对象移除时|
+
+动态生命周期使用于移除一个不作用于任何一个指定的时间跨度的缓存项。下面代码段用来保存一个具有10分钟滑动生命周期的无依赖的缓存项:
+
+```
+Cache.Insert("my_item", obj, null, DateTime.MaxValue, TimeSpan.FromMinutes(10));
+```
+
+### 实例
+仅仅使用一个按钮和一个标签创建一个页面。在页面加载事件中写入如下代码：  
+
+```
+protected void Page_Load(object sender, EventArgs e)
+{
+    if (this.IsPostBack)
+    {
+        lblinfo.Text += "Page Posted Back.<br/>";
+    }
+    else
+    {
+        lblinfo.Text += "page Created.<br/>";
+    }
+   
+    if (Cache["testitem"] == null)
+    {
+        lblinfo.Text += "Creating test item.<br/>";
+        DateTime testItem = DateTime.Now;
+        lblinfo.Text += "Storing test item in cache ";
+        lblinfo.Text += "for 30 seconds.<br/>";
+        Cache.Insert("testitem", testItem, null, 
+        DateTime.Now.AddSeconds(30), TimeSpan.Zero);
+    }
+    else
+    {
+        lblinfo.Text += "Retrieving test item.<br/>";
+        DateTime testItem = (DateTime)Cache["testitem"];
+        lblinfo.Text += "Test item is: " + testItem.ToString();
+        lblinfo.Text += "<br/>";
+    }
+      
+    lblinfo.Text += "<br/>";
+}
+```
+
+当页面第一次加载时，会显示：  
+
+```
+Page Created.
+Creating test item.
+Storing test item in cache for 30 seconds.
+```
+
+如果你在30秒钟内再次点击按钮，虽然页面被删除了，但是标签控件会从缓存中得到信息，如下所示:
+
+```
+Page Posted Back.
+Retrieving test item.
+Test item is: 14-07-2010 01:25:04
+```
